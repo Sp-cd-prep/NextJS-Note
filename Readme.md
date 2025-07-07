@@ -1,4 +1,5 @@
 > # NEXT-JS
+![NextJS](./nextjs.jpg)
 
 ### 📚 Recommended Resources
 
