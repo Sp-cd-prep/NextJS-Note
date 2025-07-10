@@ -7,15 +7,6 @@
 * 🔗 [Learn Next.js by Vercel](https://nextjs.org/learn)
 * 📹 [Next.js Full Course (freeCodeCamp)](https://www.youtube.com/watch?v=1WmNXEVia8I)
 
-# Content
-* Prerequisites refresher (React patterns, routing, etc.)
-* Introduction to Next.js and core concepts
-* App Router structure, file system routing, layouts, pages
-* Props, state management in Next.js context
-* Data fetching methods (SSR, SSG, ISR, Client-side)
-* API routes in Next.js
-* Practical examples and working mini-projects to reinforce concepts
-* External resource links and structured formatting for note-taking
 
 ## ✅ Why **Next.js** is a Powerful Extension of **React**
 
@@ -114,6 +105,256 @@ Let’s say you're building an **e-commerce site**:
 
 **Prerequisites:** You should already know basic HTML, CSS and React (components, JSX).  Knowledge of JavaScript (ES6+) and the Node.js/npm ecosystem is important since Next.js runs on Node.  (If you need a React refresher, see the official [React tutorial](https://react.dev/learn/).)  With those in hand, you can follow the steps below to start a Next.js project.
 
+Absolutely! Below is a **detailed and well-structured note** on **Project Setup and Configuration in Next.js**, suitable for your Next.js Unit-1 or Day 1 class lecture. It includes key concepts, clear explanations, and real-world context — ideal for your notes or to deliver to students.
+
+---
+
+# 📘 Unit 1: Project Setup and Configuration in Next.js
+
+---
+
+## 🔹 1. Creating a New Next.js App
+
+To get started with Next.js, you use the **official scaffolding tool**: `create-next-app`. This command creates a new Next.js project with all configurations pre-built for you.
+
+### ✅ A. Prerequisites
+
+Make sure you have:
+
+* Node.js **v18 or higher**
+* npm or yarn installed
+  Check versions:
+
+```bash
+node -v
+npm -v
+```
+
+---
+
+### ✅ B. Creating the App
+
+```bash
+npx create-next-app@latest my-next-app
+```
+
+> Replace `my-next-app` with your project name.
+
+You’ll be asked a few prompts:
+
+* Would you like to use TypeScript? → **No** (for now)
+* Would you like to use ESLint? → Yes (recommended)
+* Would you like to use Tailwind CSS? → Optional (can be skipped or added later)
+* Would you like to use `src/` directory? → Optional
+* Would you like to use App Router? → Yes ✅ (since App Router is now the default in Next.js 14)
+
+Once complete, it creates the project folder and installs all dependencies.
+
+---
+
+### ✅ C. Running the App
+
+```bash
+cd my-next-app
+npm run dev
+```
+
+The development server will start at:
+👉 `http://localhost:3000`
+
+You now have a fully functional Next.js development environment. 🎉
+
+---
+
+## 🔹 2. Project Structure Overview
+
+Here’s what you’ll see inside the created project:
+
+```
+my-next-app/
+├── app/                  # App Router directory (used instead of 'pages/')
+│   ├── layout.js         # Root layout (applied globally)
+│   └── page.js           # Home page route
+├── public/               # Static files (images, icons, etc.)
+├── styles/               # Global styles (CSS/SCSS)
+├── .env.local            # Environment variables
+├── .gitignore            # Ignored files/folders for Git
+├── jsconfig.json         # JS path aliases and IntelliSense
+├── next.config.js        # Next.js config options
+├── package.json          # Dependencies and scripts
+└── README.md
+```
+
+Let’s go through some of the key folders and files.
+
+---
+
+### ✅ A. `app/` Directory (New App Router)
+
+This replaces the older `pages/` directory (from Next.js 13+). It follows **file-based routing** with a component tree approach.
+
+**Important Files**:
+
+* `layout.js` → Global wrapper for all pages (can include headers, footers, etc.)
+* `page.js` → This is the route for `/`
+
+You can create nested folders to define routes and layouts.
+
+Example:
+
+```
+app/
+├── about/
+│   ├── page.js     # /about
+│   └── layout.js   # Layout for only /about route
+```
+
+---
+
+### ✅ B. `public/` Folder
+
+* Use this to store static files like:
+
+  * `favicon.ico`
+  * Images (e.g., `/logo.png`)
+  * Robots.txt
+
+Files in `public/` can be accessed directly:
+👉 `http://localhost:3000/logo.png`
+
+---
+
+### ✅ C. `styles/` Folder
+
+Contains global CSS files (e.g., `globals.css`) and can include modular styles or Sass files.
+
+* If using Tailwind, styles are configured here.
+* You can import global styles in `app/layout.js`.
+
+```js
+import '../styles/globals.css';
+```
+
+---
+
+## 🔹 3. Config Files in Next.js
+
+Next.js provides several config files for environment variables, settings, and path aliases.
+
+---
+
+### ✅ A. `next.config.js`
+
+This is the **main configuration file** for customizing your Next.js app.
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    domains: ['images.unsplash.com'], // allow external images
+  },
+  redirects: async () => [
+    {
+      source: '/old-blog',
+      destination: '/blog',
+      permanent: true,
+    },
+  ],
+};
+
+module.exports = nextConfig;
+```
+
+**Common use cases**:
+
+* Enabling image domains
+* Custom headers and redirects
+* Enabling experimental features
+* Configuring base paths for deployments
+
+📘 [Official Docs on `next.config.js`](https://nextjs.org/docs/app/building-your-application/configuring/next-config-js)
+
+---
+
+### ✅ B. `.env.local`
+
+Used to store **environment variables**, like API keys, database credentials, etc.
+
+Create this file in the root of your project:
+
+```
+.env.local
+```
+
+Add your variables:
+
+```
+NEXT_PUBLIC_API_URL=https://api.example.com
+PRIVATE_DB_PASSWORD=12345
+```
+
+* Prefix `NEXT_PUBLIC_` for client-accessible variables.
+* Keep sensitive values (like DB credentials) without the prefix (used only on server).
+
+Access variables in your code:
+
+```js
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+```
+
+✅ `.env.local` is ignored by Git by default.
+
+---
+
+### ✅ C. `jsconfig.json`
+
+Used for **path aliases** and **intelligent autocompletion** in JavaScript projects.
+
+Default content:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./app"]
+    }
+  }
+}
+```
+
+With this, instead of:
+
+```js
+import Header from '../../components/Header';
+```
+
+You can do:
+
+```js
+import Header from '@/components/Header';
+```
+
+Helps reduce messy relative paths and improves DX (Developer Experience).
+
+📘 [Docs on Path Aliases](https://nextjs.org/docs/advanced-features/module-path-aliases)
+
+---
+
+## 🧠 Recap & Best Practices
+
+| Task                        | File/Folder      |
+| --------------------------- | ---------------- |
+| Configure routing & layouts | `app/`           |
+| Serve static files          | `public/`        |
+| Define global styles        | `styles/`        |
+| Add environment variables   | `.env.local`     |
+| Configure Next.js behavior  | `next.config.js` |
+| Use clean import paths      | `jsconfig.json`  |
+
+---
+
 ## Setting Up Your First Next.js App
 
 1. **Install Node.js (v18+).** Next.js requires Node.js version 18 or higher.  If you don’t have it, download it from [nodejs.org](https://nodejs.org/).
@@ -141,6 +382,202 @@ Let’s say you're building an **e-commerce site**:
 * `package.json`, `next.config.js` etc.: Standard Node project files.
 
 You can open the project in your editor and explore. In `pages/index.js` you’ll see a default page component. You can edit it and see changes live.
+
+
+
+
+---
+## 🔹 1. Fundamentals of Web Rendering
+
+Before diving into Next.js, we need to understand the different ways a web page can be **rendered** and delivered to a user.
+
+---
+
+### ✅ A. **CSR (Client-Side Rendering)**
+
+**Definition**:
+In **Client-Side Rendering**, the server sends a **basic HTML file** with a JavaScript bundle. The actual rendering of content happens **in the browser**, after downloading and executing JavaScript.
+
+**How it works**:
+
+* Browser requests page → server sends `index.html` + JavaScript
+* JS downloads → React (or other library) renders the UI in the browser
+* Until JS loads, user may see a blank screen
+
+**Example**:
+Traditional React apps created with **CRA (Create React App)** use CSR.
+
+**Pros**:
+
+* Fast client-side navigation (once loaded)
+* Great for building single-page apps (SPAs)
+
+**Cons**:
+
+* Poor SEO (no content in HTML)
+* Slow initial load (especially on low-end devices)
+* Heavily reliant on JavaScript
+
+---
+
+### ✅ B. **SSR (Server-Side Rendering)**
+
+**Definition**:
+In **Server-Side Rendering**, the server renders the HTML **for every request** and sends the fully-formed HTML to the client.
+
+**How it works**:
+
+* Browser sends a request → server fetches data → renders HTML → sends it
+* Browser displays content immediately
+* JS hydrates the page (makes it interactive)
+
+**Example**:
+Next.js uses `getServerSideProps()` for SSR.
+
+**Pros**:
+
+* Great SEO (HTML is ready)
+* Faster First Contentful Paint (FCP)
+* Useful for dynamic, user-specific content
+
+**Cons**:
+
+* Slower on high-traffic pages (server renders each request)
+* Increased server load
+* Not suitable for content that rarely changes
+
+---
+
+### ✅ C. **SSG (Static Site Generation)**
+
+**Definition**:
+In **Static Site Generation**, the HTML is generated **at build time** and served as a static file for all users.
+
+**How it works**:
+
+* During deployment, the app is built
+* HTML is pre-generated and stored on CDN
+* Served instantly on request
+
+**Example**:
+Next.js uses `getStaticProps()` for SSG.
+
+**Pros**:
+
+* Blazing fast performance
+* Scalable (no server computation per request)
+* Great SEO (HTML is ready)
+
+**Cons**:
+
+* Content can become outdated unless rebuilt
+* Not ideal for user-specific or frequently changing data
+
+---
+
+### ✅ D. **ISR (Incremental Static Regeneration)**
+
+**Definition**:
+ISR allows pages to be **updated after deployment** — you get the performance of SSG with the flexibility of SSR.
+
+**How it works**:
+
+* HTML is built at runtime **after** a certain interval (`revalidate` time)
+* Old page serves until the new one is ready
+
+**Example**:
+
+```js
+export async function getStaticProps() {
+  return {
+    props: { ... },
+    revalidate: 10, // seconds
+  };
+}
+```
+
+**Pros**:
+
+* Fast like SSG
+* Pages update automatically in background
+* No full rebuild needed
+
+**Cons**:
+
+* Slightly more complex to understand
+* First user after expiration may trigger delay
+
+---
+
+### 🔍 Comparison Table
+
+| Feature           | CSR  | SSR  | SSG  | ISR         |
+| ----------------- | ---- | ---- | ---- | ----------- |
+| SEO-Friendly      | ❌    | ✅    | ✅    | ✅           |
+| Fast Initial Load | ❌    | ✅    | ✅    | ✅           |
+| Dynamic Data      | ✅    | ✅    | ❌    | ✅ (limited) |
+| Server Load       | ❌    | High | Low  | Low         |
+| Build Time        | Fast | None | High | Medium      |
+
+---
+
+## 🔹 2. Benefits of SSR / SSG Over CRA
+
+| Feature            | CRA                       | SSR / SSG (Next.js) |
+| ------------------ | ------------------------- | ------------------- |
+| SEO                | ❌ Poor                    | ✅ Excellent         |
+| Load Performance   | ❌ Slower                  | ✅ Faster            |
+| Pre-rendering      | ❌ No                      | ✅ Yes               |
+| Image Optimization | ❌ Manual                  | ✅ Built-in          |
+| Routing            | ❌ Manual                  | ✅ File-based        |
+| Server Rendering   | ❌ Not possible            | ✅ Built-in          |
+| API Routes         | ❌ External backend needed | ✅ Built-in API      |
+
+SSR/SSG lets your app be **discoverable by search engines**, load **faster**, and offer a **smoother UX**, especially for users on slower devices or poor networks.
+
+---
+
+## 🔹 3. SEO, Performance, and UX Considerations
+
+### ✅ A. **SEO (Search Engine Optimization)**
+
+* In CSR (CRA), search engines see a **blank HTML**
+* In SSR/SSG (Next.js), search engines see **pre-rendered content**
+* Next.js lets you control meta tags (`<title>`, `<meta>`) per page using `head` or `metadata`
+
+### ✅ B. **Performance**
+
+* SSG is the **fastest** (pre-built, cached pages)
+* SSR is fast but can be slower on repeated server hits
+* ISR is a smart middle ground: **dynamic + cached**
+
+### ✅ C. **UX (User Experience)**
+
+* Faster load = better UX
+* Pre-rendered content reduces “white screen” issues
+* Seamless navigation with `<Link>` in Next.js gives SPA-like experience
+
+---
+
+## 🔹 4. When to Choose Next.js for a Project
+
+### ✅ Use Next.js when:
+
+* You need **SEO optimization** (e.g., blogs, portfolios, marketing)
+* You want **faster performance** (pre-rendered pages)
+* You're building a **multi-page application**
+* You want to **avoid boilerplate setup**
+* You need both frontend + backend in one project
+* You plan to deploy to **Vercel** or any serverless platform
+
+### ❌ Avoid Next.js when:
+
+* You're building a **simple SPA** with no need for SSR/SSG
+* You want **maximum control** over your bundler and tooling
+* Your app is **purely backend** (Next is frontend-first)
+
+---
+
 
 ## Pages and File-based Routing
 
@@ -406,3 +843,19 @@ Through this mini-app, we used **file-based routing** (`pages/index.js` and `pag
 **Next Steps:** In the next lectures, you’ll dive deeper into topics like dynamic routes with `getStaticPaths`, API routes, advanced data fetching (ISR, on-demand revalidation), and the newer App Router. But with this foundation you can already build basic multi-page Next.js apps that use static generation and client-side navigation.
 
 **Resources:** See the official Next.js docs for more detail, especially **“Getting Started”** and **“Basic Features”** sections. The Learn Next.js tutorial (from Vercel) is also helpful for step-by-step chapters. The above citations are from the official docs and related guides to ensure accuracy.
+
+
+1	Introduction to Modern Development Environment	8	20
+	Evolution of software development tools, Overview of modern development stacks, Introduction to Operating Systems (Linux, macOS, Windows) for development, File system navigation, command line basics (CLI, terminal), Introduction to open-source development, Practical: CLI commands, directory structure, text file manipulation
+
+2	Source Code Editors and IDEs	10	20
+	Introduction to IDEs and text editors: VS Code, IntelliJ, Sublime, etc., Extensions, themes, and plugin usage, Writing, saving, running basic code snippets (Python, C, JavaScript), Code navigation, auto-complete, code formatting, Using terminal within editors, Practical: Install and configure VS Code, write and run sample scripts
+
+3	Version Control Systems (Git & GitHub)	12	20
+
+	Version control concepts: local vs. remote repositories, Git basics: init, clone, add, commit, push, pull, branch, merge, GitHub workflows: repositories, forks, pull requests, issues, actions, Collaboration through GitHub (teams, permissions, readme files), Resolving conflicts, .gitignore, README.md, Practical: Set up Git, GitHub account, perform end-to-end Git workflow
+
+4	Debugging, Code Quality & Automation Tools	10	20
+	Importance of debugging and error handling, Debugging tools in VS Code and browser dev tools, Introduction to linters (ESLint, Pylint), formatters (Prettier, Black), Basic task runners: npm scripts, Python virtual environments, Shell scripting introduction (bash scripts for automation), Practical: Debug code using breakpoints, configure ESLint and Prettier
+5	CI/CD and DevOps Essentials (Beginner Level)	15	20
+	Overview of CI/CD pipelines, Basics of GitHub Actions and Jenkins, Writing basic `.yaml` workflows for CI, Introduction to Docker and container concepts, Deployment concepts (staging, production), intro to Netlify/Vercel, Practical: Implement a GitHub Action to auto-check and deploy a small project
