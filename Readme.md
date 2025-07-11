@@ -576,8 +576,481 @@ SSR/SSG lets your app be **discoverable by search engines**, load **faster**, an
 * You want **maximum control** over your bundler and tooling
 * Your app is **purely backend** (Next is frontend-first)
 
+
 ---
 
+# 📘 Basic Routing and Pages in Next.js
+
+---
+
+## ✅ 1. File-Based Routing in Next.js
+
+Next.js uses the **file system to define routes**. That means:
+
+> Every file you place inside the `app/` or `pages/` directory becomes a **URL route** automatically.
+
+In the **App Router** (Next.js 13+), routes are defined in the `app/` directory.
+
+---
+
+## 🔹 A. Static Routes
+
+Static routes are created using regular file names like:
+
+```bash
+app/
+├── page.js         --> /
+├── about/
+│   └── page.js     --> /about
+├── contact/
+│   └── page.js     --> /contact
+```
+
+### 📂 Folder Structure:
+
+```bash
+my-next-app/
+└── app/
+    ├── page.js            # Homepage => /
+    └── about/
+        └── page.js        # About page => /about
+```
+
+### 🧾 Code Example: `app/page.js` (Home)
+
+```jsx
+export default function HomePage() {
+  return (
+    <main>
+      <h1>Welcome to Home Page</h1>
+    </main>
+  );
+}
+```
+
+### 🧾 Code Example: `app/about/page.js`
+
+```jsx
+export default function AboutPage() {
+  return (
+    <main>
+      <h1>About Us</h1>
+    </main>
+  );
+}
+```
+
+Now visit `/` and `/about` in your browser — no need to configure anything!
+
+---
+
+## 🔹 B. Dynamic Routes
+
+You can create dynamic URLs using **\[square brackets]** in folder/file names.
+
+### 📂 Example: `/product/[id]/page.js`
+
+```bash
+app/
+└── product/
+    └── [id]/
+        └── page.js   # URL = /product/123 or /product/shoes
+```
+
+### 🧾 Code: `app/product/[id]/page.js`
+
+```jsx
+import { useParams } from 'next/navigation';
+
+export default function ProductPage() {
+  const params = useParams();
+  return (
+    <main>
+      <h1>Product ID: {params.id}</h1>
+    </main>
+  );
+}
+```
+
+📝 `useParams()` is a built-in hook (App Router only) that gives you dynamic values from the URL.
+
+---
+
+## 🔹 C. Nested Routes
+
+Next.js lets you **nest folders** to match URL paths.
+
+### 📂 Example Structure:
+
+```bash
+app/
+└── blog/
+    ├── page.js            # /blog
+    └── [slug]/
+        └── page.js        # /blog/hello-world or /blog/nextjs-routing
+```
+
+### 🧾 `app/blog/page.js`
+
+```jsx
+export default function BlogHome() {
+  return <h1>Blog Home Page</h1>;
+}
+```
+
+### 🧾 `app/blog/[slug]/page.js`
+
+```jsx
+import { useParams } from 'next/navigation';
+
+export default function BlogPost() {
+  const { slug } = useParams();
+
+  return <h2>Viewing Blog: {slug}</h2>;
+}
+```
+
+Now visiting `/blog/nextjs` will display "Viewing Blog: nextjs".
+
+---
+
+## ✅ 2. Custom 404 and Error Pages
+
+---
+
+### 🔹 A. Custom 404 Page
+
+To customize the "Page Not Found" screen:
+
+### 📂 File: `app/not-found.js`
+
+```jsx
+export default function NotFound() {
+  return (
+    <main>
+      <h1>404 - Page Not Found</h1>
+      <p>Oops! This page does not exist.</p>
+    </main>
+  );
+}
+```
+
+➡️ This will automatically be shown for unknown routes like `/random`.
+
+---
+
+### 🔹 B. Global Error Boundary
+
+To catch **runtime errors** globally:
+
+### 📂 File: `app/error.js`
+
+```jsx
+'use client';
+
+export default function GlobalError({ error, reset }) {
+  return (
+    <main>
+      <h2>Something went wrong!</h2>
+      <p>{error.message}</p>
+      <button onClick={reset}>Try again</button>
+    </main>
+  );
+}
+```
+
+This file wraps around routes and catches **React rendering errors**.
+
+---
+
+## ✅ 3. Linking Between Pages using `<Link>` and `useRouter`
+
+---
+
+### 🔹 A. Using `<Link>` (client-side navigation)
+
+Instead of using `<a href="...">`, use `next/link`:
+
+### 🧾 Example: `app/page.js`
+
+```jsx
+import Link from 'next/link';
+
+export default function HomePage() {
+  return (
+    <main>
+      <h1>Home Page</h1>
+      <Link href="/about">Go to About</Link>
+    </main>
+  );
+}
+```
+
+✅ **Why use `<Link>`?**
+
+* Faster navigation
+* Prefetches pages in background
+* Keeps state between navigations
+
+---
+
+### 🔹 B. `useRouter()` – Programmatic Navigation
+
+Sometimes, you want to **navigate on a button click** or conditionally:
+
+### 🧾 Example: `app/about/page.js`
+
+```jsx
+'use client';
+
+import { useRouter } from 'next/navigation';
+
+export default function AboutPage() {
+  const router = useRouter();
+
+  const handleGoHome = () => {
+    router.push('/');
+  };
+
+  return (
+    <main>
+      <h1>About Page</h1>
+      <button onClick={handleGoHome}>Go Home</button>
+    </main>
+  );
+}
+```
+
+📝 Note: Components that use `useRouter` must be marked with `'use client';`
+
+---
+
+## ✅ Final Folder Structure Example
+
+```bash
+app/
+├── page.js              # /
+├── about/
+│   └── page.js          # /about
+├── product/
+│   └── [id]/
+│       └── page.js      # /product/123
+├── blog/
+│   ├── page.js          # /blog
+│   └── [slug]/
+│       └── page.js      # /blog/nextjs
+├── not-found.js         # Custom 404
+├── error.js             # Global error boundary
+```
+
+Absolutely! Here's the **complete working code** for each file in your desired `app/` directory structure using the **Next.js App Router (v13+)**, along with setup instructions and tips for getting it all running.
+
+---
+
+# ✅ Complete Next.js Project: File-Based Routing Example
+
+---
+
+## 🛠 Step 1: Project Setup
+
+Make sure Node.js ≥ **18** is installed.
+
+### ▶️ Create Your Project
+
+```bash
+npx create-next-app@latest nextjs-routing-demo
+```
+
+### Prompts:
+
+* ✅ TypeScript → **No**
+* ✅ ESLint → Yes
+* ✅ Tailwind CSS → **No**
+* ✅ `src/` folder → **No**
+* ✅ App Router → **Yes**
+* ✅ Import alias → Yes
+
+---
+
+## 📂 Final Project Structure
+
+```
+nextjs-routing-demo/
+└── app/
+    ├── page.js               # Home route
+    ├── about/
+    │   └── page.js           # Static /about route
+    ├── product/
+    │   └── [id]/
+    │       └── page.js       # Dynamic /product/:id route
+    ├── blog/
+    │   ├── page.js           # /blog home
+    │   └── [slug]/
+    │       └── page.js       # Dynamic blog post route
+    ├── not-found.js          # Custom 404
+    └── error.js              # Global error boundary
+```
+
+---
+
+## 🔍 1. `app/page.js` (Home Page)
+
+```jsx
+import Link from 'next/link';
+
+export default function HomePage() {
+  return (
+    <main>
+      <h1>Welcome to the Home Page</h1>
+      <ul>
+        <li><Link href="/about">About</Link></li>
+        <li><Link href="/product/123">Product 123</Link></li>
+        <li><Link href="/blog">Blog</Link></li>
+        <li><Link href="/blog/nextjs-routing">Blog Post: Next.js Routing</Link></li>
+        <li><Link href="/random-page">Broken Link (404)</Link></li>
+      </ul>
+    </main>
+  );
+}
+```
+
+---
+
+## 🔍 2. `app/about/page.js`
+
+```jsx
+'use client';
+import { useRouter } from 'next/navigation';
+
+export default function AboutPage() {
+  const router = useRouter();
+
+  return (
+    <main>
+      <h1>About Us</h1>
+      <p>This is the about page.</p>
+      <button onClick={() => router.push('/')}>Go to Home</button>
+    </main>
+  );
+}
+```
+
+---
+
+## 🔍 3. `app/product/[id]/page.js`
+
+```jsx
+import { useParams } from 'next/navigation';
+
+export default function ProductPage() {
+  const { id } = useParams();
+
+  return (
+    <main>
+      <h1>Product Details</h1>
+      <p>Product ID: {id}</p>
+    </main>
+  );
+}
+```
+
+---
+
+## 🔍 4. `app/blog/page.js`
+
+```jsx
+import Link from 'next/link';
+
+export default function BlogHome() {
+  return (
+    <main>
+      <h1>Blog Home</h1>
+      <p>Check out our latest posts:</p>
+      <ul>
+        <li><Link href="/blog/nextjs-routing">Next.js Routing</Link></li>
+        <li><Link href="/blog/server-side">Server Side Rendering</Link></li>
+      </ul>
+    </main>
+  );
+}
+```
+
+---
+
+## 🔍 5. `app/blog/[slug]/page.js`
+
+```jsx
+import { useParams } from 'next/navigation';
+
+export default function BlogPost() {
+  const { slug } = useParams();
+
+  return (
+    <main>
+      <h1>Blog Post</h1>
+      <p>Slug: {slug}</p>
+    </main>
+  );
+}
+```
+
+---
+
+## 🔍 6. `app/not-found.js` (Custom 404 Page)
+
+```jsx
+export default function NotFound() {
+  return (
+    <main>
+      <h1>404 - Page Not Found</h1>
+      <p>The page you are looking for does not exist.</p>
+    </main>
+  );
+}
+```
+
+✅ This automatically shows up if user visits `/nonexistent-page`.
+
+---
+
+## 🔍 7. `app/error.js` (Global Error Boundary)
+
+```jsx
+'use client';
+
+export default function GlobalError({ error, reset }) {
+  return (
+    <main>
+      <h1>Something went wrong!</h1>
+      <p>{error.message}</p>
+      <button onClick={reset}>Try again</button>
+    </main>
+  );
+}
+```
+
+✅ This catches runtime errors in components.
+
+---
+
+## ✅ Run the Project
+
+```bash
+npm run dev
+```
+
+Go to: `http://localhost:3000`
+
+Explore:
+
+* `/about`
+* `/product/123`
+* `/blog`
+* `/blog/nextjs-routing`
+* `/nonexistent-page` (shows 404)
+
+--
+---
 
 ## Pages and File-based Routing
 
