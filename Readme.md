@@ -109,10 +109,6 @@ Absolutely! Below is a **detailed and well-structured note** on **Project Setup 
 
 ---
 
-# 📘 Unit 1: Project Setup and Configuration in Next.js
-
----
-
 ## 🔹 1. Creating a New Next.js App
 
 To get started with Next.js, you use the **official scaffolding tool**: `create-next-app`. This command creates a new Next.js project with all configurations pre-built for you.
@@ -339,52 +335,6 @@ import Header from '@/components/Header';
 Helps reduce messy relative paths and improves DX (Developer Experience).
 
 📘 [Docs on Path Aliases](https://nextjs.org/docs/advanced-features/module-path-aliases)
-
----
-
-## 🧠 Recap & Best Practices
-
-| Task                        | File/Folder      |
-| --------------------------- | ---------------- |
-| Configure routing & layouts | `app/`           |
-| Serve static files          | `public/`        |
-| Define global styles        | `styles/`        |
-| Add environment variables   | `.env.local`     |
-| Configure Next.js behavior  | `next.config.js` |
-| Use clean import paths      | `jsconfig.json`  |
-
----
-
-## Setting Up Your First Next.js App
-
-1. **Install Node.js (v18+).** Next.js requires Node.js version 18 or higher.  If you don’t have it, download it from [nodejs.org](https://nodejs.org/).
-2. **Create a Next.js project.** In your terminal, navigate to the folder where you want the project and run:
-
-   ```bash
-   npx create-next-app@latest my-next-app
-   ```
-
-   This `create-next-app` command bootstraps a new Next.js app (using the latest Next.js version).  You can give your project any name (`my-next-app` above).  It will ask a few questions (e.g. if you want TypeScript; since we’re focusing on JavaScript, you can skip that).  The tool sets up a folder (`my-next-app`) with the default template.
-3. **Run the development server.** After creation, change into the project directory and start the dev server:
-
-   ```bash
-   cd my-next-app
-   npm run dev
-   ```
-
-   This launches the Next.js development server on `http://localhost:3000`.  Open that URL in your browser: you should see the default Next.js welcome page. You now have a working Next.js environment.
-
-**Project structure:** By default, Next.js creates a few folders/files:
-
-* `pages/`: This is where you put React components for each page/route of your site. For example, `pages/index.js` will be the homepage (`/`), and `pages/about.js` would serve `/about`.
-* `public/`: Static assets (images, etc.) live here.
-* `styles/`: CSS or module files for styling (though you can use any CSS-in-JS or framework you like).
-* `package.json`, `next.config.js` etc.: Standard Node project files.
-
-You can open the project in your editor and explore. In `pages/index.js` you’ll see a default page component. You can edit it and see changes live.
-
-
-
 
 ---
 ## 🔹 1. Fundamentals of Web Rendering
