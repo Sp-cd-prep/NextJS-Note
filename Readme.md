@@ -1117,6 +1117,179 @@ export default function FirstPost() {
 
 In this code, the `<Link href="/">` navigates back to the home page. When building your app, add such links between pages to allow easy navigation. The Next.js Link component ensures pages load without a full refresh.
 
+
+
+
+### Full list of the commonly used hooks from `next/navigation`:
+
+---
+
+## ✅ **Hooks from `next/navigation`**
+
+| Hook                | Description                                              | Client/Server |
+| ------------------- | -------------------------------------------------------- | ------------- |
+| `useRouter()`       | Navigate programmatically, access routing methods        | Client only   |
+| `useParams()`       | Access dynamic route parameters (`[id]`, `[slug]`, etc.) | Client only   |
+| `usePathname()`     | Get the current path (like `/about`)                     | Client only   |
+| `useSearchParams()` | Access query string (like `?q=hello&page=2`)             | Client only   |
+| `redirect()`        | Redirect users to another route                          | Server only   |
+| `notFound()`        | Trigger 404 programmatically                             | Server only   |
+
+---
+
+### 1️⃣ `useRouter()` – Navigation and history control
+
+```js
+'use client';
+import { useRouter } from 'next/navigation';
+
+export default function Home() {
+  const router = useRouter();
+
+  return (
+    <div>
+      <button onClick={() => router.push('/about')}>Go to About</button>
+      <button onClick={() => router.back()}>Go Back</button>
+    </div>
+  );
+}
+```
+
+**Methods available in `useRouter()`**:
+
+* `router.push('/path')` – Navigate to a route
+* `router.replace('/path')` – Replace the route (no history entry)
+* `router.refresh()` – Refresh the current route
+* `router.back()` – Go back in browser history
+* `router.forward()` – Go forward (rarely used)
+
+---
+
+### 2️⃣ `useParams()` – Dynamic URL segments
+
+```js
+'use client';
+import { useParams } from 'next/navigation';
+
+export default function ProductPage() {
+  const { id } = useParams(); // /product/[id]
+
+  return <h1>Product ID: {id}</h1>;
+}
+```
+
+Returns an object with all route parameters based on the dynamic segments.
+
+---
+
+### 3️⃣ `usePathname()` – Get current path
+
+```js
+'use client';
+import { usePathname } from 'next/navigation';
+
+export default function PathViewer() {
+  const pathname = usePathname();
+
+  return <p>You are currently on: {pathname}</p>;
+}
+```
+
+Very useful for highlighting navigation menus or tracking page.
+
+---
+
+### 4️⃣ `useSearchParams()` – Get query parameters (search strings)
+
+```js
+'use client';
+import { useSearchParams } from 'next/navigation';
+
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get('q');
+
+  return <h2>Searching for: {keyword}</h2>;
+}
+```
+
+Example URL: `/search?q=nextjs` → Output: "Searching for: nextjs"
+
+---
+
+### 5️⃣ `redirect()` – Server-side redirection
+
+```js
+// This is a SERVER component
+import { redirect } from 'next/navigation';
+
+export default function Page() {
+  const isLoggedIn = false;
+
+  if (!isLoggedIn) {
+    redirect('/login'); // Server-side redirect
+  }
+
+  return <h1>Welcome!</h1>;
+}
+```
+
+Works only in server components like `layout.js`, `page.js` (without `'use client'`).
+
+---
+
+### 6️⃣ `notFound()` – Server-side 404 trigger
+
+```js
+// SERVER component
+import { notFound } from 'next/navigation';
+
+export default function BlogPage({ params }) {
+  const post = null; // simulate post not found
+
+  if (!post) {
+    notFound(); // Triggers 404 page
+  }
+
+  return <h1>Blog post found!</h1>;
+}
+```
+
+---
+
+## 🧠 Summary Table
+
+| Hook                | Purpose                  | Used In | Example Use                          |
+| ------------------- | ------------------------ | ------- | ------------------------------------ |
+| `useRouter()`       | Programmatic routing     | Client  | `.push('/about')`, `.back()`         |
+| `useParams()`       | Get dynamic route values | Client  | `{ id } = useParams()`               |
+| `usePathname()`     | Current pathname         | Client  | Useful for highlighting nav links    |
+| `useSearchParams()` | Access URL query string  | Client  | `?page=2&sort=name`                  |
+| `redirect()`        | Server-side navigation   | Server  | `redirect('/login')`                 |
+| `notFound()`        | Trigger 404 page         | Server  | `notFound()` when item doesn't exist |
+
+---
+
+## ✅ When to Use What?
+
+| Scenario                               | Hook to Use           |
+| -------------------------------------- | --------------------- |
+| Navigate between pages                 | `useRouter().push()`  |
+| Get a route param like `/product/[id]` | `useParams()`         |
+| Know where user is                     | `usePathname()`       |
+| Read search params like `?q=test`      | `useSearchParams()`   |
+| Redirect unauthenticated user          | `redirect()` (server) |
+| Page doesn't exist                     | `notFound()` (server) |
+
+---
+
+
+
+
+
+
+
+
 ## Data Fetching: Static Generation vs Server-Side Rendering
 
 A core feature of Next.js is **pre-rendering** pages to HTML before serving them, which improves performance and SEO. You can choose between:
