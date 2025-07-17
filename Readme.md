@@ -793,7 +793,79 @@ app/
 ├── error.js             # Global error boundary
 ```
 
-Absolutely! Here's the **complete working code** for each file in your desired `app/` directory structure using the **Next.js App Router (v13+)**, along with setup instructions and tips for getting it all running.
+
+---
+
+## ✅ `useParams()` vs `useRouter()` in Next.js (App Router)
+
+| Hook          | Purpose                                                                                              | Use Case                                   | Works In                      |
+| ------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------ | ----------------------------- |
+| `useParams()` | Directly gives you **dynamic route params**                                                          | `/product/[id]` → `{ id: '123' }`          | **App Router only**           |
+| `useRouter()` | Lets you navigate programmatically and access full router object (query, pathname, push, back, etc.) | Navigate, redirect, get current route info | **App Router & Pages Router** |
+
+---
+
+### 🧪 Example: Using `useParams()` (Cleaner for dynamic values)
+
+```jsx
+'use client';
+import { useParams } from 'next/navigation';
+
+export default function ProductPage() {
+  const { id } = useParams(); // ✅ id = dynamic segment in URL
+
+  return <h1>Product ID: {id}</h1>;
+}
+```
+
+---
+
+### 🧪 Example: Using `useRouter()` (More verbose)
+
+```jsx
+'use client';
+import { useRouter } from 'next/navigation';
+
+export default function ProductPage() {
+  const router = useRouter();
+  const id = router?.asPath?.split('/product/')[1]; // or use pathname
+
+  return <h1>Product ID: {id}</h1>;
+}
+```
+
+But this way is **hackier** and more error-prone — especially with nested routes or query strings.
+
+---
+
+## 🔍 Which Should You Use?
+
+| If You Want...                                    | Use             |
+| ------------------------------------------------- | --------------- |
+| Just the dynamic segment (`[id]`, `[slug]`, etc.) | ✅ `useParams()` |
+| Navigation (`router.push('/about')`)              | ✅ `useRouter()` |
+| Accessing full URL, back button, etc.             | ✅ `useRouter()` |
+
+---
+
+## 🧠 Best Practice
+
+* Use **`useParams()`** when you're on a dynamic route and want to **extract the param**.
+* Use **`useRouter()`** when you want to **navigate** or access route info (like pathname, history).
+
+---
+
+## ✅ Bonus: Server Component Alternative
+
+If your dynamic page doesn’t need interactivity (like clicking buttons), you can use this cleaner server pattern:
+
+```js
+export default function ProductPage({ params }) {
+  return <h1>Product ID: {params.id}</h1>;
+}
+```
+
+This is **server-rendered** and doesn't need `'use client'`.
 
 ---
 
@@ -1002,42 +1074,6 @@ Explore:
 --
 ---
 
-## Pages and File-based Routing
-
-Next.js uses **file-based routing**. Each file you put under the `pages/` directory becomes a route in your app:
-
-* `pages/index.js` → route `/` (the homepage).
-* `pages/about.js` → route `/about`.
-* `pages/blog/hello.js` → route `/blog/hello`.
-* **Index routes:** Any `index.js` in a folder maps to the folder’s root. E.g. `pages/blog/index.js` maps to `/blog`.
-* **Dynamic routes:** You can create dynamic URL parameters by bracket syntax. For example, a file named `pages/posts/[id].js` will match `/posts/1`, `/posts/hello-world`, etc. (You use `getStaticPaths` with this for static generation; we’ll cover dynamic routing later.).
-
-**Example:** Suppose we create `pages/about.js`:
-
-```js
-// pages/about.js
-export default function About() {
-  return <h1>About Us</h1>;
-}
-```
-
-When running the app, navigating to `http://localhost:3000/about` shows “About Us”.  The name of the file (without extension) defines the route path.
-
-**Layouts:** If you have a common layout (header/footer) across pages, you can create a custom `<App>` in `pages/_app.js` that wraps every page. For instance:
-
-```js
-// pages/_app.js
-import Layout from '../components/Layout';
-export default function MyApp({ Component, pageProps }) {
-  return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-  );
-}
-```
-
-This wraps every page with `<Layout>`. We won’t dive into layouts deeply right now, but know that `_app.js` is where app-wide wrappers belong. (For now, focus on individual pages and routing.)
 
 ## Client-Side Navigation with Link
 
