@@ -1508,6 +1508,10 @@ Nice — let’s go deep and practical. I’ll explain **what each thing is**, *
 
 * Pages that benefit from pre-rendering for SEO and fast first paint, but the content updates periodically (not every millisecond).
 * Examples: marketing pages, blog posts, documentation pages, product pages with mostly stable info, recipe pages, knowledge-base articles.
+* Content is frequently updated but doesn't require real-time updates.
+* Performance is crucial, as ISR still serves cached, pre-rendered pages for fast initial loading times.
+* SEO is important, because search engines can easily crawl and index pre-rendered static pages.
+* Scalability is a concern, as ISR reduces server load by regenerating pages only when needed, not on every request
 
 **Pros**
 
@@ -1521,15 +1525,18 @@ Nice — let’s go deep and practical. I’ll explain **what each thing is**, *
 
 **Typical revalidate choices (guideline)**
 
-* Blog marketing page: `revalidate: 3600` (1 hour) or trigger webhook on publish.
 * Product page (inventory matters): `revalidate: 30–300` sec or use on-demand revalidate when inventory changes.
 * News/breaking: use SSR or very small revalidate window + on-demand webhooks.
+* E-commerce Product Pages: Update product information (e.g., price, availability) without rebuilding the entire site every time, says DEV Community.
+* Blogs and News Sites: Update blog posts or news articles regularly, delivering fresh content without sacrificing speed.
+* CMS-driven Content: Quickly reflect content changes from a CMS without requiring full redeployments
 
 ---
 
 # 2) SWR — what, how, when to use it
 
 **What it is**
+SWR, which stands for Stale-While-Revalidate, is a lightweight React Hooks library primarily used for data fetching and caching in Next.js applications
 
 * A client-side library implementing the **stale-while-revalidate** strategy.
 * Returns cached data immediately, re-fetches in background, then updates the UI.
